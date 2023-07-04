@@ -9,11 +9,14 @@ on:
       - main
 
 jobs:
-  setup-rust:
-    name: Set up Rust
+  test-code:
+    name: Set up Rust and run tests
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Cache
         id: cache
         uses: actions/cache@v3
@@ -31,31 +34,9 @@ jobs:
         with:
           toolchain: stable
 
-  install-cargo-tarpaulin:
-    name: Install cargo-tarpaulin
-    runs-on: ubuntu-latest
-    needs: setup-rust
-
-    steps:
-      - name: Cache
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.cargo/bin
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
       - name: Install cargo-tarpaulin
         if: steps.cache.outputs.cache-hit != 'true'
         run: cargo install cargo-tarpaulin
-
-  run-tests:
-    name: Run tests
-    runs-on: ubuntu-latest
-    needs: [setup-rust, install-cargo-tarpaulin]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
       - name: Run tests with code coverage
         run: cargo tarpaulin
