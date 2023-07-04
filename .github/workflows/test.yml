@@ -10,7 +10,7 @@ on:
 
 jobs:
   coverage:
-    name: Run Code Coverage
+    name: Run Tests
     runs-on: ubuntu-latest
 
     steps:
