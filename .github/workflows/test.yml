@@ -48,4 +48,4 @@ jobs:
         run: cargo install cargo-tarpaulin
 
       - name: Run tests with code coverage
-        run: cargo tarpaulin
+        run: cargo tarpaulin --fail-under 95
