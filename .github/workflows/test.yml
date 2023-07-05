@@ -34,6 +34,15 @@ jobs:
         with:
           toolchain: stable
 
+      - name: Cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: Cargo check
+        run: cargo check --verbose
+
+      - name: Lint with clippy
+        run: cargo clippy -- -D warnings --verbose
+
       - name: Install cargo-tarpaulin
         if: steps.cache.outputs.cache-hit != 'true'
         run: cargo install cargo-tarpaulin
