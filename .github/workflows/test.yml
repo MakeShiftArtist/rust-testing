@@ -9,15 +9,15 @@ on:
       - main
 
 jobs:
-  test-code:
-    name: Set up Rust and run tests
+  lint-code:
+    name: Check linting
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache
+      - name: Cache Rust
         id: cache
         uses: actions/cache@v3
         with:
@@ -43,9 +43,34 @@ jobs:
       - name: Lint with clippy
         run: cargo clippy -- -D warnings --verbose
 
+  test-code:
+    name: Test Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache Rust and cargo-tarpaulin
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Set up Rust
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
       - name: Install cargo-tarpaulin
         if: steps.cache.outputs.cache-hit != 'true'
         run: cargo install cargo-tarpaulin
 
-      - name: Run tests with code coverage
+      - name: Run tests
         run: cargo tarpaulin --fail-under 95
