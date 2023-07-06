@@ -40,7 +40,7 @@ jobs:
       - name: Cargo check
         run: cargo check --verbose
 
-      - name: Lint with clippy
+      - name: Cargo clippy
         run: cargo clippy -- -D warnings --verbose
 
   test-code:
